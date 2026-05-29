@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Checklist Veicular</title>
+
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+const supabase = createClient(
+  "SUA_URL_SUPABASE",
+  "SUA_PUBLISHABLE_KEY"
+);
+
+const itens = [
+"Buzina",
+"Pisca Alerta",
+"Setas",
+"Farol",
+"Luz de Freio",
+"Freio de Pedal",
+"Luz de Ré",
+"Freio de Mão",
+"Embreagem",
+"Câmbio",
+"Cintos de Segurança",
+"Retrovisores",
+"Limpador Para-brisa",
+"Extintor",
+"Estepe",
+"Bateria",
+"Escapamento",
+"Pneu Traseiro",
+"Pneu Dianteiro",
+"Água Radiador",
+"Óleo Motor",
+"Vazamentos",
+"Limpeza",
+"Documento Veículo",
+"Capacete",
+"Luva",
+"Óculos"
+];
+
+const lista = document.getElementById("lista");
+
+window.addEventListener("DOMContentLoaded", () => {
+  const lista = document.getElementById("lista");
+
+  itens.forEach(item => {
+    lista.innerHTML += `
+      <div class="item">
+        <div class="titulo">${item}</div>
+
+        <label><input type="radio" name="${item}" value="OK" checked> OK</label>
+        <label><input type="radio" name="${item}" value="ATENCAO"> Atenção</label>
+        <label><input type="radio" name="${item}" value="MANUTENCAO"> Manutenção</label>
+      </div>
+    `;
+  });
+});
+
+window.salvarChecklist = async () => {
+
+  const motorista = document.getElementById("motorista").value;
+  const veiculo = document.getElementById("veiculo").value;
+  const km = Number(document.getElementById("km").value);
+  const observacoes = document.getElementById("observacoes").value;
+
+  if(!motorista || !veiculo){
+    alert("Preencha motorista e veículo");
+    return;
+  }
+
+  const { data, error } = await supabase
+    .from("checklists")
+    .insert({
+      motorista,
+      veiculo,
+      km,
+      observacoes
+    })
+    .select()
+    .single();
+
+  if(error){
+    alert(error.message);
+    return;
+  }
+
+  for(const item of itens){
+
+    const status = document.querySelector(
+      `input[name="${item}"]:checked`
+    ).value;
+
+    await supabase
+      .from("checklist_itens")
+      .insert({
+        checklist_id: data.id,
+        item,
+        status
+      });
+  }
+
+  alert("Checklist salvo com sucesso");
+
+  location.reload();
+}
+</script>
+
+<style>
+body{
+  font-family:Arial;
+  background:#f5f5f5;
+  margin:0;
+  padding:15px;
+}
+
+.container{
+  max-width:900px;
+  margin:auto;
+  background:#fff;
+  padding:20px;
+  border-radius:10px;
+}
+
+input,textarea{
+  width:100%;
+  padding:10px;
+  margin:5px 0;
+  box-sizing:border-box;
+}
+
+.item{
+  border:1px solid #ddd;
+  padding:10px;
+  margin-bottom:10px;
+  border-radius:8px;
+}
+
+.titulo{
+  font-weight:bold;
+  margin-bottom:10px;
+}
+
+button{
+  width:100%;
+  padding:15px;
+  background:#28a745;
+  color:white;
+  border:none;
+  border-radius:8px;
+  font-size:18px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Checklist Veicular</h2>
+
+<input id="motorista" placeholder="Motorista">
+
+<input id="veiculo" placeholder="Veículo">
+
+<input id="km" type="number" placeholder="KM Atual">
+
+<div id="lista"></div>
+
+<textarea
+id="observacoes"
+rows="5"
+placeholder="Observações">
+</textarea>
+
+<button onclick="salvarChecklist()">
+Salvar Checklist
+</button>
+
+</div>
+
+</body>
+</html>
