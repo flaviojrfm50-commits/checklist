@@ -90,8 +90,8 @@ window.abrirFinalizacao = async function(id){
   km_rodado: kmRodado,
   data_final: dataFinal,
   hora_final: horaFinal,
-  observacoes_retorno:
-    document.getElementById("observacoes_retorno").value,
+ observacoes_retorno:
+  document.getElementById("observacoes_retorno")?.value || "",
 
   status: "FINALIZADO"
 })
@@ -296,10 +296,9 @@ Novo Checklist
 Checklists Abertos
 </button>
 
+</div>
 
 <div id="abaNovo">
-
-</div>
 
 <h2>Checklist Diário</h2>
 
