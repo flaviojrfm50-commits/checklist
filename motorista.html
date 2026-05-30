@@ -70,21 +70,25 @@ window.abrirFinalizacao = async function(id){
 
   const agora = new Date();
 
-  const dataFinal =
-    agora.toISOString().split("T")[0];
+  const { data: checklist } = await supabase
+  .from("checklists")
+  .select("km_inicio")
+  .eq("id", id)
+  .single();
 
-  const horaFinal =
-    agora.toTimeString().slice(0,5);
+const kmRodado =
+  Number(kmFinal) - Number(checklist.km_inicio);
 
-  const { error } = await supabase
-    .from("checklists")
-    .update({
-      km_final: Number(kmFinal),
-      data_final: dataFinal,
-      hora_final: horaFinal,
-      status: "FINALIZADO"
-    })
-    .eq("id", id);
+const { error } = await supabase
+  .from("checklists")
+  .update({
+    km_final: Number(kmFinal),
+    km_rodado: kmRodado,
+    data_final: dataFinal,
+    hora_final: horaFinal,
+    status: "FINALIZADO"
+  })
+  .eq("id", id);
 
   if(error){
     alert(error.message);
