@@ -44,6 +44,9 @@ const itens = [
 ];
 
 window.addEventListener("DOMContentLoaded", () => {
+
+  carregarAbertos();
+
   const lista = document.getElementById("lista");
 
   itens.forEach(item => {
@@ -59,18 +62,26 @@ window.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-async function finalizarChecklist(id){
+window.abrirFinalizacao = async function(id){
 
-  const dataFinal = document.getElementById("data_final").value;
-  const horaFinal = document.getElementById("hora_final").value;
-  const kmFinal = document.getElementById("km_final").value;
+  const kmFinal = prompt("KM Final");
+
+  if(!kmFinal) return;
+
+  const agora = new Date();
+
+  const dataFinal =
+    agora.toISOString().split("T")[0];
+
+  const horaFinal =
+    agora.toTimeString().slice(0,5);
 
   const { error } = await supabase
     .from("checklists")
     .update({
+      km_final: Number(kmFinal),
       data_final: dataFinal,
       hora_final: horaFinal,
-      km_final: Number(kmFinal),
       status: "FINALIZADO"
     })
     .eq("id", id);
@@ -80,9 +91,48 @@ async function finalizarChecklist(id){
     return;
   }
 
-  alert("Checklist finalizado");
+  alert("Checklist Finalizado");
+
+  carregarAbertos();
 }
 
+
+async function carregarAbertos(){
+
+  const { data, error } = await supabase
+    .from("checklists")
+    .select("*")
+    .eq("status","ABERTO")
+    .order("criado_em",{ascending:false});
+
+  if(error) return;
+
+  const div = document.getElementById("abertos");
+
+  div.innerHTML = "";
+
+  data.forEach(c => {
+
+    div.innerHTML += `
+      <div style="
+        border:1px solid #ddd;
+        padding:10px;
+        margin-bottom:10px;
+        border-radius:8px">
+
+        <b>${c.placa}</b><br>
+        Condutor: ${c.condutor}<br>
+        KM Inicial: ${c.km_inicio}<br>
+
+        <button
+          onclick="abrirFinalizacao('${c.id}')">
+          Finalizar
+        </button>
+
+      </div>
+    `;
+  });
+}
 window.salvarChecklist = async () => {
 
 const observacoes = document.getElementById("observacoes").value;
@@ -211,6 +261,9 @@ button{
 <label>KM Inicial</label>
 <input id="km_inicio" type="number">
 
+<h3>Checklists Abertos</h3>
+
+<div id="abertos"></div>
 
 <hr>
 
