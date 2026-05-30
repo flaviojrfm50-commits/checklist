@@ -59,6 +59,30 @@ window.addEventListener("DOMContentLoaded", () => {
   });
 });
 
+async function finalizarChecklist(id){
+
+  const dataFinal = document.getElementById("data_final").value;
+  const horaFinal = document.getElementById("hora_final").value;
+  const kmFinal = document.getElementById("km_final").value;
+
+  const { error } = await supabase
+    .from("checklists")
+    .update({
+      data_final: dataFinal,
+      hora_final: horaFinal,
+      km_final: Number(kmFinal),
+      status: "FINALIZADO"
+    })
+    .eq("id", id);
+
+  if(error){
+    alert(error.message);
+    return;
+  }
+
+  alert("Checklist finalizado");
+}
+
 window.salvarChecklist = async () => {
 
 const observacoes = document.getElementById("observacoes").value;
@@ -81,12 +105,14 @@ const observacoes = document.getElementById("observacoes").value;
   finalidade: document.getElementById("finalidade").value,
 
   data_inicio: document.getElementById("data_inicio").value || null,
-hora_inicio: document.getElementById("hora_inicio").value || null,
+  hora_inicio: document.getElementById("hora_inicio").value || null,
   km_inicio: Number(document.getElementById("km_inicio").value || 0),
 
- data_final: document.getElementById("data_final").value || null,
-hora_final: document.getElementById("hora_final").value || null,
-  km_final: Number(document.getElementById("km_final").value || 0)
+  data_final: null,
+  hora_final: null,
+  km_final: null,
+
+  status: "ABERTO"
 })
     .select()
     .single();
@@ -185,14 +211,6 @@ button{
 <label>KM Inicial</label>
 <input id="km_inicio" type="number">
 
-<label>Data Final</label>
-<input id="data_final" type="date">
-
-<label>Hora Final</label>
-<input id="hora_final" type="time">
-
-<label>KM Final</label>
-<input id="km_final" type="number">
 
 <hr>
 
