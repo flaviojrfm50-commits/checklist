@@ -38,10 +38,13 @@ async function carregar(){
     tbody.innerHTML += `
       <tr>
         <td>${dataFormatada}</td>
-        <td>${c.motorista || ""}</td>
-        <td>${c.veiculo || ""}</td>
-        <td>${c.km || 0}</td>
-        <td>
+        <td>${c.condutor || ""}</td>
+<td>${c.placa || ""}</td>
+<td>${c.km_inicio || 0}</td>
+<td>${c.km_final || 0}</td>
+<td>${c.km_rodado || 0}</td>
+<td>${c.status || "ABERTO"}</td>
+<td>
           <button onclick="verChecklist('${c.id}')">
             Ver
           </button>
@@ -103,8 +106,10 @@ document.getElementById("detalhes").innerHTML = `
     <b>Data Início:</b> ${checklist.data_inicio || "-"}<br>
     <b>Hora Início:</b> ${checklist.hora_inicio || "-"}<br>
     <b>KM Inicial:</b> ${checklist.km_inicio || 0}<br>
+<b>KM Final:</b> ${checklist.km_final || 0}<br>
+<b>KM Rodado:</b> ${checklist.km_rodado || 0}<br>
 
-    <b>Status:</b> ${checklist.status || "ABERTO"}<br>
+<b>Status:</b> ${checklist.status || "ABERTO"}<br>
 
     <b>Observações:</b><br>
     ${checklist.observacoes || "-"}
@@ -204,6 +209,9 @@ button{
 <th>Condutor</th>
 <th>Placa</th>
 <th>KM Inicial</th>
+<th>KM Final</th>
+<th>KM Rodado</th>
+<th>Status</th>
 <th>Ações</th>
 </tr>
 </thead>
