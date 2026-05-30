@@ -86,12 +86,15 @@ window.abrirFinalizacao = async function(id){
   const { error } = await supabase
     .from("checklists")
     .update({
-      km_final: Number(kmFinal),
-      km_rodado: kmRodado,
-      data_final: dataFinal,
-      hora_final: horaFinal,
-      status: "FINALIZADO"
-    })
+  km_final: Number(kmFinal),
+  km_rodado: kmRodado,
+  data_final: dataFinal,
+  hora_final: horaFinal,
+  observacoes_retorno:
+    document.getElementById("observacoes_retorno").value,
+
+  status: "FINALIZADO"
+})
     .eq("id", id);
 
   if(error){
@@ -320,6 +323,15 @@ Checklists Abertos
 <h3>Checklists Abertos</h3>
 
 <div id="abertos"></div>
+
+<h3>Retorno do Veículo</h3>
+
+<textarea
+id="observacoes_retorno"
+rows="4"
+placeholder="Observações do retorno do veículo">
+</textarea>
+
 
 </div>
 
