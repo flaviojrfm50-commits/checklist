@@ -145,6 +145,26 @@ async function carregarAbertos(){
     `;
   });
 }
+
+window.mostrarAba = function(aba){
+
+  document.getElementById("abaNovo")
+    .style.display = "none";
+
+  document.getElementById("abaAbertos")
+    .style.display = "none";
+
+  if(aba === "novo"){
+    document.getElementById("abaNovo")
+      .style.display = "block";
+  }
+
+  if(aba === "abertos"){
+    document.getElementById("abaAbertos")
+      .style.display = "block";
+  }
+}
+
 window.salvarChecklist = async () => {
 
 const observacoes = document.getElementById("observacoes").value;
@@ -249,12 +269,36 @@ button{
   border-radius:8px;
   font-size:18px;
 }
+
+.abas{
+  display:flex;
+  gap:10px;
+  margin-bottom:20px;
+}
+
+.abas button{
+  flex:1;
+}
 </style>
 </head>
 
 <body>
 
 <div class="container">
+<div class="abas">
+
+<button onclick="mostrarAba('novo')">
+Novo Checklist
+</button>
+
+<button onclick="mostrarAba('abertos')">
+Checklists Abertos
+</button>
+
+
+<div id="abaNovo">
+
+</div>
 
 <h2>Checklist Diário</h2>
 
@@ -273,9 +317,13 @@ button{
 <label>KM Inicial</label>
 <input id="km_inicio" type="number">
 
+<div id="abaAbertos" style="display:none">
+
 <h3>Checklists Abertos</h3>
 
 <div id="abertos"></div>
+
+</div>
 
 <hr>
 
