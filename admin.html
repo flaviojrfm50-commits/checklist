@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -86,7 +87,31 @@ window.verChecklist = async function(id){
     `;
   });
 
-  document.getElementById("detalhes").innerHTML = html;
+  const { data: checklist } = await supabase
+  .from("checklists")
+  .select("*")
+  .eq("id", id)
+  .single();
+
+document.getElementById("detalhes").innerHTML = `
+  <div style="padding:15px;background:#fff;border:1px solid #ddd;margin-bottom:15px">
+
+    <b>Condutor:</b> ${checklist.condutor || "-"}<br>
+    <b>Placa:</b> ${checklist.placa || "-"}<br>
+    <b>Finalidade:</b> ${checklist.finalidade || "-"}<br>
+
+    <b>Data Início:</b> ${checklist.data_inicio || "-"}<br>
+    <b>Hora Início:</b> ${checklist.hora_inicio || "-"}<br>
+    <b>KM Inicial:</b> ${checklist.km_inicio || 0}<br>
+
+    <b>Status:</b> ${checklist.status || "ABERTO"}<br>
+
+    <b>Observações:</b><br>
+    ${checklist.observacoes || "-"}
+  </div>
+
+  ${html}
+`;
 
   window.scrollTo({
     top:document.body.scrollHeight,
@@ -176,9 +201,9 @@ button{
 <thead>
 <tr>
 <th>Data</th>
-<th>Motorista</th>
-<th>Veículo</th>
-<th>KM</th>
+<th>Condutor</th>
+<th>Placa</th>
+<th>KM Inicial</th>
 <th>Ações</th>
 </tr>
 </thead>
