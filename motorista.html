@@ -63,22 +63,19 @@ window.addEventListener("DOMContentLoaded", () => {
 
 window.salvarChecklist = async () => {
 
-  const motorista = document.getElementById("motorista").value;
-  const veiculo = document.getElementById("veiculo").value;
-  const km = Number(document.getElementById("km").value);
-  const observacoes = document.getElementById("observacoes").value;
+const observacoes = document.getElementById("observacoes").value;
 
-  if(!motorista || !veiculo){
-    alert("Preencha motorista e veículo");
-    return;
-  }
+  if(
+ !document.getElementById("condutor").value ||
+ !document.getElementById("placa").value
+){
+  alert("Preencha Condutor e Placa");
+  return;
+}
 
   const { data, error } = await supabase
     .from("checklists")
     .insert({
-  motorista,
-  veiculo,
-  km,
   observacoes,
 
   condutor: document.getElementById("condutor").value,
@@ -200,12 +197,6 @@ button{
 <input id="km_final" type="number">
 
 <hr>
-
-<input id="motorista" placeholder="Motorista">
-
-<input id="veiculo" placeholder="Veículo">
-
-<input id="km" type="number" placeholder="KM Atual">
 
 <div id="lista"></div>
 
